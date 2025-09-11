@@ -1,4 +1,4 @@
-# 📝 Мой ToDo List
+# 📝 ToDo List
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Badge">
@@ -7,53 +7,64 @@
   <img src="https://img.shields.io/badge/Local_Storage-F5E625?style=for-the-badge&logo=HTML5&logoColor=black" alt="Local Storage Badge">
 </p>
 
-Добро пожаловать в мой ToDo List 🚀 — проект, который поможет организовать твои задачи и держать всё под контролем. Это не просто список, а твоя личная панель управления продуктивностью!
+Welcome to my ToDo List 🚀 — a project designed to help you organize your tasks and stay in control. It's not just a list; it's your personal productivity dashboard!
 
 ---
 
-## 🎮 Фичи
+## 🎮 Features
 
-* **Три статуса для задач:** `Не выполнено`, `В процессе` и `Выполнено`. С таким чекмарком ты точно ничего не упустишь.
-* **Сортировка:** Хочешь порядок? Сортируй задачи по статусу, чтобы видеть, что нужно сделать в первую очередь.
-* **Режимы отображения:** Переключайся между `Всеми задачами`, только `Активными` и `Завершенными`. Сфокусируйся на важном.
-* **Анимации:** Плавные и приятные анимации добавления и удаления задач благодаря **Framer Motion**.
-* **Автосохранение:** Все твои задачи автоматически сохраняются в **Local Storage**. Теперь можно перезагружать страницу и не бояться потерять прогресс.
-* **Адаптивность:** Приложение выглядит и работает отлично как на десктопе, так и на мобильных устройствах.
+* **Three Task Statuses:** Not Started, In Progress, and Completed. With this checklist, you won't miss a thing.
 
----
+* **Sorting:** Need to prioritize? Sort tasks by status to see what needs to be done first.
 
-## 🛠️ Технологии
+* **View Modes:** Switch between All Tasks, Active tasks only, and Completed tasks. Focus on what matters.
 
-* ⚛️ **React**: Основа проекта.
-* 🎨 **Styled Components**: Для стилей. Это как магия, но с кодом.
-* 🎞️ **Framer Motion**: Для того, чтобы UI был живым и приятным.
-* 📦 **Local Storage**: Для сохранения данных прямо в браузере.
+* **Animations:** Smooth and engaging animations for adding and deleting tasks, powered by Framer Motion.
+
+* **Auto-save:** All your tasks are automatically saved to Local Storage. You can reload the page without fear of losing your progress.
+
+* **Responsiveness:** The app looks and works great on both desktop and mobile devices.
+
+
 
 ---
 
-## ⚡ Установка и запуск
+## 🛠️ Teck Stack
 
-Готов начать свой квест?
+* ⚛️ **React**: The foundation of the project.
+* 🎨 **Styled Components**: For a magical coding experience with styles.
+* 🎞️ **Framer Motion**: To make the UI feel alive and interactive.
+* 📦 **Local Storage**: For data persistence right in the browser.
+
+---
+
+## ⚡ Installation and Run
+
+
 
 ```bash
-# Клонировать репозиторий
-git clone <URL_твоего_репозитория>
+# Clone repo
+git clone (https://github.com/MaxTafrov/todo-list)
 
-# Перейти в папку
-cd <название_папки>
+# Navigate into project folder
+cd <folder-name>
 
-# Установить зависимости
+# Install dependencies
 npm install
 
-# Запустить проект
+# Start the project
 npm start
 ```
 
-👉 Открыть демо (https://todo-list-iota-five-17.vercel.app/)
+👉 Live Demo (https://todo-list-iota-five-17.vercel.app/)
 
 ---
 
-## 📬 Контакты
+## 📬 Contact me
+
+**Got questions or ideas? Feel free to reach out. I'm always available!**
+
+
 
 * 🌐 GitHub [Max Tafrov](https://github.com/usernamehttps://github.com/MaxTafrov)
 
@@ -63,4 +74,5 @@ npm start
 
 * 🔗 LinkedIn [Maxim Tafrov](https://www.linkedin.com/in/maxim-tafrov-56a243378/)
 
-⭐ Не забудь поставить звёздочку этому репозиторию, если он тебе понравился! 😉
+⭐ Don't forget to star this repository if you liked the project! 😉
+
