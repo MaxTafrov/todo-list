@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import css from '../../styles/style.css'
 import { GlobalStyle } from '../../styles/style.css'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Cancel as CancelIcon } from '@mui/icons-material'
+import TaskStatus from '../../components/TaskStatus'
+import DeleteIcon from '@mui/icons-material/Delete'
+
+import SortIcon from '@mui/icons-material/Sort'
+import FilterListIcon from '@mui/icons-material/FilterList'
 
 const {
 	CenteredContainer,
@@ -11,31 +15,58 @@ const {
 	TopNavBar,
 	Title,
 	ListContainer,
-	ListItem,
 	ListItemContainer,
+	ListItem,
 	DeleteButton,
-	ConfirmButton,
 	AddInput,
+	ConfirmButton,
 	CancelButton,
-	DeleteIcon,
 	AddInputWrapper,
 } = css
 
 const Main = () => {
-	const [tasks, setTasks] = useState([])
+	const [tasks, setTasks] = useState(() => {
+		try {
+			const savedTasks = localStorage.getItem('tasks')
+			return savedTasks ? JSON.parse(savedTasks) : []
+		} catch (error) {
+			console.error('Failed to load tasks from local storage', error)
+			return []
+		}
+	})
+
 	const [addingTask, setAddingTask] = useState(false)
 	const [newTaskText, setNewTaskText] = useState('')
 	const [taskToDelete, setTaskToDelete] = useState(null)
+	const [sortMode, setSortMode] = useState('default')
+	const [viewMode, setViewMode] = useState('all')
 
 	const inputRef = useRef(null)
+
+	useEffect(() => {
+		try {
+			localStorage.setItem('tasks', JSON.stringify(tasks))
+		} catch (error) {
+			console.error('Failed to save tasks to local storage', error)
+		}
+	}, [tasks])
+
+	useEffect(() => {
+		if (addingTask && inputRef.current) {
+			inputRef.current.focus()
+		}
+	}, [addingTask])
 
 	const handleAddTask = () => {
 		setAddingTask(true)
 	}
 
 	const handleConfirmAdd = () => {
-		if (newTaskText.trim) {
-			setTasks([...tasks, newTaskText.trim()])
+		if (newTaskText.trim()) {
+			setTasks([
+				...tasks,
+				{ id: Date.now(), text: newTaskText.trim(), status: 'not-started' },
+			])
 			setNewTaskText('')
 			setAddingTask(false)
 		}
@@ -50,12 +81,12 @@ const Main = () => {
 		setNewTaskText(e.target.value)
 	}
 
-	const handleDeleteTask = index => {
-		setTaskToDelete(index)
+	const handleDeleteTask = id => {
+		setTaskToDelete(id)
 	}
 
 	const handleConfirmDelete = () => {
-		setTasks(tasks.filter((_, i) => i !== taskToDelete))
+		setTasks(tasks.filter(task => task.id !== taskToDelete))
 		setTaskToDelete(null)
 	}
 
@@ -63,15 +94,82 @@ const Main = () => {
 		setTaskToDelete(null)
 	}
 
-	useEffect(() => {
-		if (addingTask && inputRef.current) {
-			inputRef.current.focus()
+	const handleToggleStatus = id => {
+		const nextStatus = {
+			'not-started': 'in-progress',
+			'in-progress': 'completed',
+			completed: 'not-started',
 		}
-	}, [addingTask])
+		setTasks(
+			tasks.map(task =>
+				task.id === id ? { ...task, status: nextStatus[task.status] } : task
+			)
+		)
+	}
 
-	const itemVariant = {
+	const handleSort = () => {
+		if (sortMode === 'default') {
+			setSortMode('status-asc')
+		} else if (sortMode === 'status-asc') {
+			setSortMode('status-desc')
+		} else {
+			setSortMode('default')
+		}
+	}
+
+	const handleView = () => {
+		if (viewMode === 'all') {
+			setViewMode('active')
+		} else if (viewMode === 'active') {
+			setViewMode('completed')
+		} else {
+			setViewMode('all')
+		}
+	}
+
+	const getSortedTasks = () => {
+		const sortedTasks = [...tasks]
+		if (sortMode === 'status-asc') {
+			sortedTasks.sort((a, b) => {
+				const statusOrder = { 'not-started': 1, 'in-progress': 2, completed: 3 }
+				return statusOrder[a.status] - statusOrder[b.status]
+			})
+		} else if (sortMode === 'status-desc') {
+			sortedTasks.sort((a, b) => {
+				const statusOrder = { 'not-started': 1, 'in-progress': 2, completed: 3 }
+				return statusOrder[b.status] - statusOrder[a.status]
+			})
+		}
+		return sortedTasks
+	}
+
+	const getFilteredTasks = () => {
+		const sortedTasks = getSortedTasks()
+		if (viewMode === 'active') {
+			return sortedTasks.filter(task => task.status !== 'completed')
+		} else if (viewMode === 'completed') {
+			return sortedTasks.filter(task => task.status === 'completed')
+		}
+		return sortedTasks
+	}
+
+	const filteredTasks = getFilteredTasks()
+
+	const getSortButtonText = () => {
+		if (sortMode === 'status-asc') return 'Status ↑'
+		if (sortMode === 'status-desc') return 'Status ↓'
+		return 'Sort'
+	}
+
+	const getViewButtonText = () => {
+		if (viewMode === 'active') return 'Active'
+		if (viewMode === 'completed') return 'Completed'
+		return 'View All'
+	}
+
+	const itemVariants = {
 		hidden: { opacity: 0, y: 20 },
-		visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+		visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 		exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
 	}
 
@@ -82,8 +180,13 @@ const Main = () => {
 				<Title>ToDo List</Title>
 				<ContentBlock>
 					<TopNavBar>
-						<MainButton>Sort</MainButton>
-						<MainButton>View</MainButton>
+						<MainButton onClick={handleSort}>
+							<SortIcon style={{ marginRight: '5px' }} /> {getSortButtonText()}
+						</MainButton>
+						<MainButton onClick={handleView}>
+							<FilterListIcon style={{ marginRight: '5px' }} />{' '}
+							{getViewButtonText()}
+						</MainButton>
 						<MainButton onClick={handleAddTask}>+</MainButton>
 					</TopNavBar>
 					<ListContainer>
@@ -92,7 +195,7 @@ const Main = () => {
 								initial='hidden'
 								animate='visible'
 								exit='exit'
-								variants={itemVariant}
+								variants={itemVariants}
 							>
 								<ListItemContainer>
 									<ListItem>
@@ -102,44 +205,48 @@ const Main = () => {
 												type='text'
 												value={newTaskText}
 												onChange={handleChange}
-												placeholder='New Task'
+												placeholder='New task..'
 											/>
 											<ConfirmButton onClick={handleConfirmAdd}>
 												OK
 											</ConfirmButton>
-											<CancelButton onClick={handleCancelAdd}>
-												<DeleteIcon />
-											</CancelButton>
+											<CancelButton onClick={handleCancelAdd}>X</CancelButton>
 										</AddInputWrapper>
 									</ListItem>
 								</ListItemContainer>
 							</motion.div>
 						)}
 						<AnimatePresence>
-							{tasks.map((task, index) => (
+							{filteredTasks.map(task => (
 								<motion.div
-									key={task}
+									key={task.id}
 									initial='hidden'
 									animate='visible'
 									exit='exit'
-									variants={itemVariant}
+									variants={itemVariants}
 								>
-									<ListItemContainer key={index}>
+									<ListItemContainer>
 										<ListItem>
-											{taskToDelete === index ? (
+											{taskToDelete === task.id ? (
 												<>
-													<span> Delete "{task}"?</span>
+													<span>Delete "{task.text}"?</span>
 													<ConfirmButton onClick={handleConfirmDelete}>
-														Yes
+														Да
 													</ConfirmButton>
 													<CancelButton onClick={handleCancelDelete}>
-														No
+														Нет
 													</CancelButton>
 												</>
 											) : (
 												<>
-													<span>{task}</span>
-													<DeleteButton onClick={() => handleDeleteTask(index)}>
+													<TaskStatus
+														status={task.status}
+														onClick={() => handleToggleStatus(task.id)}
+													/>
+													<span>{task.text}</span>
+													<DeleteButton
+														onClick={() => handleDeleteTask(task.id)}
+													>
 														<DeleteIcon />
 													</DeleteButton>
 												</>
@@ -155,4 +262,5 @@ const Main = () => {
 		</>
 	)
 }
+
 export default Main

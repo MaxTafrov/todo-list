@@ -2,6 +2,9 @@ import { createGlobalStyle } from 'styled-components'
 import styled from 'styled-components'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import DonutLargeIcon from '@mui/icons-material/DonutLarge'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 export const GlobalStyle = createGlobalStyle`
   body {
@@ -49,7 +52,7 @@ const css = {
 		padding: 30px;
 		border-radius: 25px;
 		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-		width: 500px;
+		width: 450px;
 		min-height: 600px;
 		display: flex;
 		flex-direction: column;
@@ -58,10 +61,10 @@ const css = {
 		@media (max-width: 768px) {
 			min-height: 90vh;
 			padding: 20px;
-			width: clamp(280px, 95%, 500px);
+			width: clamp(280px, 105%, 500px);
 		}
 		@media (max-width: 480px) {
-			width: clamp(250px, 95%, 400px);
+			width: clamp(250px, 100%, 400px);
 			padding: 15px;
 			min-height: 85vh;
 		}
@@ -82,11 +85,14 @@ const css = {
 		}
 	`,
 	MainButton: styled(BaseButton)`
-		width: 100px;
+		width: 120px;
 		height: 52px;
 		background-color: #715a5a;
 		font-size: 1rem;
 		padding: 0 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		&:nth-last-child(1) {
 			width: 52px;
@@ -166,7 +172,7 @@ const css = {
 		padding: 0 15px;
 		font-size: 16px;
 		outline: none;
-		background-color: #d3dad1;
+		background-color: #ffffff;
 		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 		min-width: 100px;
 
@@ -174,6 +180,28 @@ const css = {
 			width: 100%;
 			order: -1;
 			min-width: unset;
+		}
+	`,
+
+	Checkmark: styled.div`
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		transition: all 0.3s ease;
+		flex-shrink: 0;
+
+		& > svg {
+			font-size: 24px;
+			color: ${props => {
+				if (props.status === 'completed') return '#74966d'
+				if (props.status === 'in-progress') return '#9a7e6f'
+				return '#888' //
+			}};
+			transition: color 0.3s ease;
 		}
 	`,
 	CancelButton: styled(BaseButton)`
